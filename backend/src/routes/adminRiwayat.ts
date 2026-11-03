@@ -170,7 +170,7 @@ router.get('/', async (req: Request, res: Response): Promise<void> => {
     prisma.diagnosis.count({ where }),
   ]);
 
-  const formattedList = riwayatList.map((item) => {
+  const formattedList = riwayatList.map((item: typeof riwayatList[number]) => {
     let parsedKode: string[] = [];
     try {
       const parsed = JSON.parse(item.kodeMILInput);

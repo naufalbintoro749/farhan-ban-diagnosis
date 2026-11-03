@@ -284,7 +284,7 @@ router.get('/riwayat', async (_req: Request, res: Response): Promise<void> => {
     },
   });
 
-  const formatted = list.map((item) => {
+  const formatted = list.map((item: typeof list[number]) => {
     let parsedKode: string[] = [];
     try {
       const parsed = JSON.parse(item.kodeMILInput);

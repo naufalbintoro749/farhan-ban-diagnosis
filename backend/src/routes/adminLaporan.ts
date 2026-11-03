@@ -94,7 +94,7 @@ router.post('/cetak', async (req: Request, res: Response): Promise<void> => {
     },
   });
 
-  const diagnosisList: DiagnosisRow[] = rawList.map((d) => {
+  const diagnosisList: DiagnosisRow[] = rawList.map((d: typeof rawList[number]) => {
     let parsedKode: string[] = [];
     try {
       const parsed = JSON.parse(d.kodeMILInput);

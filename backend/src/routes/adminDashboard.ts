@@ -39,7 +39,7 @@ router.get('/statistik', async (_req: Request, res: Response): Promise<void> => 
     const distribusiMap: Record<string, number> = {};
     const kodeMILCount: Record<string, number> = {};
 
-    semuaDiagnosis.forEach((diag) => {
+    semuaDiagnosis.forEach((diag: { model?: { merek?: { nama?: string } }; kodeMILInput: unknown; createdAt: Date }) => {
       const merekNama = diag.model?.merek?.nama || 'Lainnya';
       distribusiMap[merekNama] = (distribusiMap[merekNama] || 0) + 1;
 
@@ -81,7 +81,7 @@ router.get('/statistik', async (_req: Request, res: Response): Promise<void> => 
       trenMap[key] = 0;
     }
 
-    semuaDiagnosis.forEach((diag) => {
+    semuaDiagnosis.forEach((diag: { createdAt: Date }) => {
       const key = diag.createdAt.toISOString().split('T')[0];
       if (trenMap[key] !== undefined) {
         trenMap[key] += 1;
