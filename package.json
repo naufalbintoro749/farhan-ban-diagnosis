@@ -1,0 +1,23 @@
+{
+  "name": "sistem-pakar-mil-motor",
+  "version": "1.0.0",
+  "description": "Sistem Pakar Diagnosis Kerusakan Sepeda Motor Honda & Yamaha Berbasis Kode Kedipan MIL - Farhan Motor",
+  "private": true,
+  "scripts": {
+    "start": "node start-all.js",
+    "dev": "node start-all.js",
+    "dev:all": "node start-all.js",
+    "dev:frontend": "npm run dev --prefix frontend",
+    "dev:backend": "npm run dev --prefix backend",
+    "frontend:start": "npm run dev --prefix frontend",
+    "backend:serve": "npm run dev --prefix backend",
+    "build": "npm run build --prefix backend && npm run build --prefix frontend",
+    "install:all": "npm install --prefix backend && npm install --prefix frontend",
+    "test:backend": "npm test --prefix backend",
+    "test:frontend": "npm test --prefix frontend"
+  },
+  "workspaces": [
+    "backend",
+    "frontend"
+  ]
+}

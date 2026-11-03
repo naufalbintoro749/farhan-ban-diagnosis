@@ -1,0 +1,146 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// Skema akan didefinisikan lebih lanjut di Task 2.1
+// Placeholder model untuk inisialisasi koneksi
+
+model Merek {
+  id        Int       @id @default(autoincrement())
+  nama      String    @unique
+  aktif     Boolean   @default(true)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  model     Model[]
+  kodeMIL   KodeMIL[]
+}
+
+model Model {
+  id        Int         @id @default(autoincrement())
+  nama      String
+  merekId   Int
+  aktif     Boolean     @default(true)
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+  merek     Merek       @relation(fields: [merekId], references: [id])
+  kodeMIL   KodeMIL[]
+  diagnosis Diagnosis[]
+
+  @@unique([nama, merekId])
+}
+
+model KodeMIL {
+  id          Int           @id @default(autoincrement())
+  kode        String
+  deskripsi   String
+  merekId     Int
+  modelId     Int?
+  aktif       Boolean       @default(true)
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+  merek       Merek         @relation(fields: [merekId], references: [id])
+  model       Model?        @relation(fields: [modelId], references: [id])
+  basisAturan BasisAturan[]
+
+  @@unique([kode, merekId, modelId])
+}
+
+model Gejala {
+  id          Int           @id @default(autoincrement())
+  nama        String        @unique
+  deskripsi   String?
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+  basisAturan BasisAturan[]
+}
+
+model Kerusakan {
+  id          Int                 @id @default(autoincrement())
+  nama        String              @unique
+  deskripsi   String?
+  createdAt   DateTime            @default(now())
+  updatedAt   DateTime            @updatedAt
+  basisAturan BasisAturan[]
+  komponen    KerusakanKomponen[]
+  solusi      KerusakanSolusi[]
+}
+
+model Komponen {
+  id        Int                 @id @default(autoincrement())
+  nama      String              @unique
+  deskripsi String?
+  createdAt DateTime            @default(now())
+  updatedAt DateTime            @updatedAt
+  kerusakan KerusakanKomponen[]
+}
+
+model Solusi {
+  id        Int               @id @default(autoincrement())
+  langkah   String
+  urutan    Int
+  createdAt DateTime          @default(now())
+  updatedAt DateTime          @updatedAt
+  kerusakan KerusakanSolusi[]
+}
+
+model KerusakanKomponen {
+  kerusakanId Int
+  komponenId  Int
+  kerusakan   Kerusakan @relation(fields: [kerusakanId], references: [id])
+  komponen    Komponen  @relation(fields: [komponenId], references: [id])
+
+  @@id([kerusakanId, komponenId])
+}
+
+model KerusakanSolusi {
+  kerusakanId Int
+  solusiId    Int
+  kerusakan   Kerusakan @relation(fields: [kerusakanId], references: [id])
+  solusi      Solusi    @relation(fields: [solusiId], references: [id])
+
+  @@id([kerusakanId, solusiId])
+}
+
+model BasisAturan {
+  id          Int       @id @default(autoincrement())
+  kodeMILId   Int
+  gejalaid    Int
+  kerusakanId Int
+  bobot       Float     @default(1.0)
+  aktif       Boolean   @default(true)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  kodeMIL     KodeMIL   @relation(fields: [kodeMILId], references: [id])
+  gejala      Gejala    @relation(fields: [gejalaid], references: [id])
+  kerusakan   Kerusakan @relation(fields: [kerusakanId], references: [id])
+}
+
+model Diagnosis {
+  id             Int      @id @default(autoincrement())
+  modelId        Int
+  model          Model    @relation(fields: [modelId], references: [id])
+  namaPengguna   String?  @default("")
+  noTelepon      String?  @default("")
+  kodeMILInput   String
+  hasilDiagnosis String
+  createdAt      DateTime @default(now())
+}
+
+model Admin {
+  id            Int       @id @default(autoincrement())
+  email         String    @unique
+  passwordHash  String
+  nama          String
+  loginAttempts Int       @default(0)
+  lockedUntil   DateTime?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+}
